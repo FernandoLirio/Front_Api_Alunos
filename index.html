@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Alunos</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>API Alunos</h1>
+
+    <!--///////////////////////////////////////////// parte 1 do codigo /////////////////////////////////////-->
+    <div class="card my-4">
+      <div class="card-header">
+        Cadastrou
+      </div>
+      <div class="card-body">
+        <form id="cadastroForm">
+          <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="text" class="form-control" id="nome" required>
+          </div>
+          <div class="form-group">
+            <label for="idade">Idade</label>
+            <input type="number" class="form-control" id="idade" required>
+          </div>
+          <div class="form-group">
+            <label for="endereco">Endereço</label>
+            <input type="text" class="form-control" id="endereco" required>
+          </div>
+          <div class="form-group">
+            <label for="curso">Curso</label>
+            <input type="text" class="form-control" id="curso" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const subimeteu = document.getElementById("cadastroForm");
+      subimeteu.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const nome = document.getElementById('nome').value;
+        const idade = document.getElementById('idade').value;
+        const endereco = document.getElementById('endereco').value;
+        const curso = document.getElementById('curso').value;
+        const email = document.getElementById('email').value;
+
+        $.ajax({
+          url: 'http://localhost:8080/alunos',
+          contentType: 'application/json',
+          cache: false,
+          method: 'POST',
+          dataType: 'json',
+          data: JSON.stringify({
+            nome: nome,
+            idade: idade,
+            endereco: endereco,
+            curso: curso,
+            email: email
+          }),
+          success: function (data) {
+            console.log(data);
+          }
+        });
+
+
+      });
+
+
+    </script>
+
+  <!--///////////////////////////////////////////// parte 2 do codigo /////////////////////////////////////-->
+    <div class="card my-4">
+      <div class="card-header">
+        Consultar Aluno
+      </div>
+      <div class="card-body">
+        <form id="consultaForm">
+          <div class="form-group">
+            <label for="consultaId">ID do Aluno</label>
+            <input type="number" class="form-control" id="consultaId" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Consultar</button>
+           
+        </form>
+      </div>
+      <p id="jamal">
+
+      </p>
+    </div>
+   
+
+    <script>//segundo escript
+
+  const subimetinho = document.getElementById("consultaForm");
+      subimetinho.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const id = document.getElementById('consultaId').value;
+        
+        $.ajax({
+          url: 'http://localhost:8080/alunos/'+id,
+          contentType: 'application/x-www-form-urlencoded',
+          cache: false,
+          method: 'GET',
+          dataType: 'json',
+        
+          success: function (data) {
+            document.getElementById("jamal").innerHTML = " nome:  "+data.nome+" <br> endereco: "+data.endereco+"<br> idade: "+data.idade+"<br> curso: "+data.curso+"<br> email: "+data.email
+            console.log(data);
+          }
+        });
+
+
+      });
+    </script>
+
+      <!--///////////////////////////////////////////// parte 3 do codigo /////////////////////////////////////-->
+    <div class="card my-4">
+      <div class="card-header">
+        Deletar Aluno
+      </div>
+      <div class="card-body">
+        <form id="deletarForm">
+          <div class="form-group">
+            <label for="deletarId">ID do Aluno</label>
+            <input type="number" class="form-control" id="deletarId" required>
+          </div>
+          <button type="submit" class="btn btn-danger">Deletar</button>
+        </form>
+      </div>
+    </div>
+    <script>
+
+      const subimetasso = document.getElementById("deletarForm");
+          subimetasso.addEventListener('submit', (event) => {
+            event.preventDefault();
+    
+            const idi = document.getElementById('deletarId').value;
+            
+            $.ajax({
+              url: 'http://localhost:8080/alunos/'+idi,
+              contentType: 'application/x-www-form-urlencoded',
+              cache: false,
+              method: 'DELETE',
+              dataType: 'json',
+            
+              success: function (data) {
+                console.log(data);
+              }
+            });
+    
+          });
+  
+        </script>
+      <!--///////////////////////////////////////////// parte 4 do codigo /////////////////////////////////////-->
+    <div class="card my-4">
+      <div class="card-header">
+        Listar Alunos
+      </div>
+      <div class="card-body">
+        <button id="listarBtn" class="btn btn-primary">Listar</button>
+        <ul id="alunosList" class="list-group mt-3"></ul>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+
+    const subimetisso = document.getElementById("listarBtn");
+        subimetisso.addEventListener('click', (event) => {
+          event.preventDefault();
+         // console.log("AAAAAAAAAAA")
+          $.ajax({
+            url: 'http://localhost:8080/alunos',
+            contentType: 'application/x-www-form-urlencoded',
+            cache: false,
+            method: 'GET',
+            dataType: 'json',
+          
+            success: function (data) {
+              if(Array.isArray(data)){
+                data.forEach(element =>  
+                  document.getElementById("alunosList").innerHTML += `<li class="pt-3">  nome: ${element.nome}  <br> endereco: ${element.endereco} <br> idade: ${element.idade}<br> curso: ${element.curso}<br> email:${element.email}</li>` 
+                );
+
+              }
+              console.log(data);
+            }
+          });
+  
+        });
+
+      </script>
+  
+</body>
+
+</html>
